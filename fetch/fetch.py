@@ -1,9 +1,8 @@
 from __future__ import annotations, print_function
 
+import db
 import json
 import user_login
-
-
 
 import logging
 """
@@ -30,13 +29,14 @@ def get_next_message():
 
 
 def run():
-
+    sesh_manager = db.ServiceSessionManager()
     # run forever... like a microservice :)
     data = get_next_message()
     print(data)
     for msg in data["Messages"]:
         user = user_login.fetch_next_user(msg["Body"])
         logger.info(user)
+        sesh_manager.save_users([user])
     return
 
 if __name__ == "__main__":
