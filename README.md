@@ -4,7 +4,7 @@
     1. User ids are unique.
     2. App versions have a mapping to an app version table.
     3. DB is normalized to some degree...
-    4. 
+    4. All user ips are ipv4
 
 # Production Deployment:
     1. Add way better data validations and handle errors appropriately
@@ -26,3 +26,5 @@
     1. Ensure db credentials were stored and loaded in a secure manner
     2. Since there's a lot of network i/o, I'd want to make this async
     3. Make sure things aren't so tightly coupled
+    4. Make this run forever. For now, it just runs until we're out of messages.
+    5. Handle ipv6

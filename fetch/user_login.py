@@ -10,7 +10,7 @@ from typing import Dict, List, Optional
 If this were production, I would use the AWS API boto3. There's a bit of credential configuration that would need to be added
 to the production machine in order for this API to work.
 """
-import data_mask
+import pii
 import json
 
 class Base(DeclarativeBase):
@@ -69,8 +69,8 @@ class UserLogin(Base):
         return UserLogin(
             user_id = js_obj.get("user_id"),
             device_type = js_obj.get("device_type"),
-            masked_ip = data_mask.mask(js_obj.get("ip"), "masked_ip"),
-            masked_device_id = data_mask.mask(js_obj.get("device_id"), "device_id"),
+            masked_ip = pii.mask_ip(js_obj.get("ip")),
+            masked_device_id = pii.mask_device_id(js_obj.get("device_id")),
             locale = js_obj.get("locale"),
             app_version = js_obj.get("app_version").split(".")[0],
             create_date = datetime.now()
