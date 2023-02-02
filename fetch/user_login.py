@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from sqlalchemy import String, Date, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped
-from sqlalchemy.orm import mapped_column, relationship
+from sqlalchemy.orm import mapped_column
 from datetime import datetime
 from typing import Dict, List, Optional
 
@@ -12,6 +12,11 @@ to the production machine in order for this API to work.
 """
 import pii
 import json
+
+
+# shouldn't use a global for this lookup table
+app_versions = {}
+next_idx = 0
 
 class Base(DeclarativeBase):
     pass
@@ -72,12 +77,24 @@ class UserLogin(Base):
             masked_ip = pii.mask_ip(js_obj.get("ip")),
             masked_device_id = pii.mask_device_id(js_obj.get("device_id")),
             locale = js_obj.get("locale"),
-            app_version = js_obj.get("app_version").split(".")[0],
+            app_version = get_or_create_appversion(js_obj.get("app_version")), #.split(".")[0],
             create_date = datetime.now()
         )
 
 
 
-
-def fetch_next_user(data: Dict[str]) -> Optional[UserLogin]:
+"""
+Self-documenting code
+"""
+def fetch_next_user(data: Dict[str, str]) -> Optional[UserLogin]:
     return json.loads(data, object_hook=UserLogin.create_user_login)
+
+
+def get_or_create_appversion(app_str: str):
+    global next_idx
+    if not app_versions.get(app_str, False):
+        print(app_str)
+        print(app_versions)
+        app_versions[app_str] = next_idx
+        next_idx += 1
+    return app_versions[app_str]

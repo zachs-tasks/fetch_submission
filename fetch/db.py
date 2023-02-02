@@ -1,15 +1,17 @@
-
-
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from typing import List
 from user_login import UserLogin
 
+"""
+Hopefully self-documenting
+"""
 class ServiceSessionManager:
-    def __init__(self):
-        self.engine = create_engine("postgresql+psycopg2://postgres:postgres@localhost:5432/")
-        return
 
+    # wouldn't have the default for production code
+    def __init__(self, connection_string: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/"):
+        self.engine = create_engine(connection_string)
+        return
 
     def save_users(self, users: List[UserLogin]):
         with Session(self.engine) as session:
